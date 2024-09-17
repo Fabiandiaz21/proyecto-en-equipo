@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gasto Semanal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(90deg, rgba(10,72,145,1) 62%, rgba(8,35,60,1) 73%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 1000px;
+            display: flex;
+            flex-direction: row;
+            gap: 35px;
+        }
+        #tb1{
+            text-align: center;
+        }
+        h2 {
+            display: flex;
+            justify-content: center;
+        }
+        .form-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .form, .listado {
+            width: 48%;
+        }
+        h2 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            row-gap: 200px;
+        }
+        #agregar{
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button.borrar {
+            background-color: red;
+            width: auto;
+            padding: 5px 10px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .gasto-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .cantidad {
+            background-color: #007bff;
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .presupuesto, .restante {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .presupuesto {
+            background-color: #e3f2fd;
+        }
+        .restante {
+            background-color: #d0f0c0;
+        }
+        *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Quicksand", sans-serif;
+}
+
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: #000;
+}
+
+section{
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    flex-wrap: wrap;
+    overflow: hidden;
+}
+
+section::before{
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(85,85,208,1)29%, rgba(187,109,235,1)70%);
+    animation: animate 5s linear infinite;
+}
+
+@keyframes animate{
+    0%{
+        transform: translateY(-100%);
+    }
+    100%{
+        transform: translateY(100%);
+    }
+}
+
+section span{
+    position: relative;
+    display: block;
+    width: calc(6.25vw - 2px);
+    height: calc(6.25vw - 2px);
+    background: #181818;
+    z-index: 2;
+    transition: 1.5s;
+}
+
+section span:hover{
+    background: #BB6DEB;
+    transition: 0s;
+}
+
+section .signin{
+    position: absolute;
+    background: #222;
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    border-radius: 4px;
+    box-shadow: 0 15px 35px rgba(0,0,0,9);
+}
+
+section .signin .content{
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 40px;
+}
+
+section .signin .content h2{
+font-size: 2em;
+color: #5555D0;
+text-transform: uppercase;
+}
+
+section .signin .content .form{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+section .signin .content .form .inputBox{
+    position: relative;
+    width: 100%;
+}
+
+section .signin .content .form .inputBox input{
+    position: relative;
+    width: 100%;
+    background: #333;
+    border: none;
+    padding: 25px 10px 7.5px;
+    border-radius: 4px;
+    color: #FFF;
+    font-weight: 500;
+    font-size: 1em;
+}
+
+section .signin .content .form .inputBox i {
+    position: absolute;
+    left: 0;
+    padding:  15px 10px;
+    font-style: normal;
+    color: #aaa;
+    transition: 0.5s;
+    pointer-events: none;
+}
+
+.signin .content .form .inputBox input:focus ~ i,
+.signin .content .form .inputBox input:valid ~ i{
+    transform: translateY(-7.5px);
+    color: #FFF;
+}
+.signin .content .form .links{
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+.signin .content .form .links a{
+    color: #FFF;
+    text-decoration: none;
+}
+
+.signin .content .form .inputBox input[type="submit"]{
+    padding: 10px;
+    background: #5555D0;
+    color: #000;
+    font-weight: 600;
+    font-size: 1.35em;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+}
+
+
+.signin .content .form .inputBox input[type="submit"]:hover{
+    background: #BB6DEB;
+}
+
+input[type="submit"]:active{
+    opacity: 0.6;
+}
+
+@media(max-width: 900px){
+    section span{
+        width: calc(10vw - 2px);
+        height: calc(10vw - 2px);
+    }
+}
+
+@media(max-width: 600px){
+    section span{
+        width: calc(20vw - 2px);
+        height: calc(20vw - 2px);
+    }
+}
+    </style>
+</head>
+<body>
+    <section>
+         <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <div class="signin">
+        <div class="content">
+            <div class="container">
+        <div class="form">
+            <h2>Añade tus gastos aqui</h2>
+            <label for="gasto">Gasto:</label>
+            <div class="inputBox">
+                <input type="text" required id="gasto" name="cantidad">
+                <i>Nombre del gasto</i>
+            </div>
+            <label for="cantidad">Cantidad:</label>
+            <div class="inputBox">
+                <input type="text" required id="cantidad" name="gasto" onkeyup="moneda(this);">
+                <i>Cantidad en $</i>
+            </div>
+            <button id="agregar" onclick="validar()">Agregar</button>
+        </div>
+        <div class="listado">
+            <h2>Listado</h2>
+            <div class="gasto-item">
+                <table class="table table-bordered border-primary" id="tb1">
+                    <thead>
+                        <tr>
+                            <td>Producto</td>
+                            <td>Valor</td>
+                            <td>Opciones</td>
+                        </tr>
+                    </thead>
+                    <tbody id="body"></tbody>
+                </table>
+            </div>
+            <div class="presupuesto">
+                <p>Presupuesto:</p> <p id="presupuesto-valor"></p>
+            </div>
+            <div class="restante" id="restante">
+                <p>Restante:</p> <p id="restante-valor"></p>
+            </div>
+        </div>
+    </div>
+    </div>
+        </div>
+         
+   
+    </section>
+   
+    <script>
+        let data = [];
+        let bd = false;
+        let id = null;
+        let presupuesto = 0;
+        let restante = 0;
+
+        window.onload = function() {
+            Swal.fire({
+                title: 'Ingrese su presupuesto semanal',
+                input: 'text',
+                inputPlaceholder: 'Cantidad en $',
+                showCancelButton: false,
+                inputAttributes: {
+                    oninput: "moneda(this)"
+                },
+                inputValidator: (value) => {
+                    if (!value) {
+                        return '¡Necesita ingresar un presupuesto!'
+                    } else {
+                        presupuesto = parseFloat(value.replace(/,/g, '')) || 0;
+                        restante = presupuesto;
+                        document.getElementById("presupuesto-valor").textContent = presupuesto.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+                        document.getElementById("restante-valor").textContent = restante.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+                        actualizarColorRestante();
+                    }
+                }
+            });
+        }
+
+        function enviar() {
+            let cantidad = parseInt(document.getElementById("cantidad").value.replace(/,/g, ''));
+
+            if (bd === true) {
+                let cantidadActual = parseInt(data[id].cantidad.replace(/,/g, ''));
+                restante += cantidadActual - cantidad;
+                data[id].gasto = document.getElementById("gasto").value;
+                data[id].cantidad = cantidad.toLocaleString('en-US', { minimumFractionDigits: 0 });
+                bd = false;
+                id = null;
+            } else {
+                restante -= cantidad;
+                if (restante < 0) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Se pasa del prosupuesto."
+                    });
+                    restante += cantidad;
+                    return;
+                }
+                let gasto = document.getElementById("gasto").value;
+                data.push({ gasto, cantidad: cantidad.toLocaleString('en-US', { minimumFractionDigits: 0 }) });
+            }
+
+            document.getElementById("body").textContent = "";
+            document.getElementById("gasto").value = "";
+            document.getElementById("cantidad").value = "";
+            document.getElementById("restante-valor").textContent = restante.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+            actualizarColorRestante();
+            pintar();
+        }
+
+        function pintar() {
+            data.forEach((e, i) => {
+                let tr = document.createElement("tr");
+
+                let td = document.createElement("td");
+                td.textContent = e.gasto;
+                tr.appendChild(td);
+
+                td = document.createElement("td");
+                td.textContent = `$${e.cantidad}`;
+                tr.appendChild(td);
+
+                td = document.createElement("td");
+                let editar = document.createElement("button");
+                editar.textContent = "📝";
+                editar.addEventListener("click", () => {
+                    document.getElementById("gasto").value = e.gasto;
+                    document.getElementById("cantidad").value = e.cantidad;
+                    bd = true;
+                    id = i;
+                });
+                let eliminar = document.createElement("button");
+                eliminar.textContent = "❌";
+                eliminar.addEventListener("click", () => {
+                    restante += parseInt(e.cantidad.replace(/,/g, ''));
+                    data.splice(i, 1);
+                    document.getElementById("body").textContent = "";
+                    document.getElementById("restante-valor").textContent = restante.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+                    actualizarColorRestante();
+                    pintar();
+                });
+                td.appendChild(editar);
+                td.appendChild(eliminar);
+                tr.appendChild(td);
+
+                document.getElementById("body").appendChild(tr);
+            });
+        }
+
+        function actualizarColorRestante() {
+            const restanteElemento = document.getElementById("restante");
+            const agregarButton = document.getElementById("agregar");
+            const porcentajeRestante = (restante / presupuesto) * 100;
+
+            if (porcentajeRestante <= 0) {
+                restanteElemento.style.backgroundColor = 'red';
+                agregarButton.disabled = true;
+            } else if (porcentajeRestante <= 20) {
+                restanteElemento.style.backgroundColor = 'orange';
+                agregarButton.disabled = false;
+            } else {
+                restanteElemento.style.backgroundColor = '#d0f0c0'; // color original
+                agregarButton.disabled = false;
+            }
+        }
+
+        function moneda(e) {
+            e.value = e.value.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function validar() {
+            let gasto = document.getElementById("gasto").value.trim();
+            let cantidad = document.getElementById("cantidad").value.trim();
+
+            if (gasto === "") {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Por favor, ingrese el nombre del gasto."
+                });
+                return;
+            }
+
+            if (cantidad === "" || parseFloat(cantidad.replace(/,/g, '')) <= 0) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Por favor, ingrese una cantidad válida."
+                });
+                return;
+            }
+
+            enviar();
+        }
+    </script>
+</body>
+</html>
+
